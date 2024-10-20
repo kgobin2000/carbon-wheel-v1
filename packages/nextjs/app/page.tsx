@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { carbonCreditNFT } from "../components/abis";
 import containerStyles from "../styles/Container.module.css";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { NFTSection } from "~~/components/NFTSection";
+import { useScaffoldReadContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
 
 export default function Home() {
   const [vehicleMake, setVehicleMake] = useState("Smart Car");
@@ -14,8 +16,12 @@ export default function Home() {
   const [carbonCredits, setCarbonCredits] = useState<number>(0);
   const [potentialEarnings, setPotentialEarnings] = useState<number>(0);
   const [transactionId, setTransactionId] = useState(null);
+  const { targetNetwork } = useTargetNetwork();
+
+  const nftContractAddress = "0x93aBfCd5e9c847110D85127305242d9c38d4f987";
 
   const { address, isConnected } = useAccount();
+  console.log("Address:", address);
 
   // Price per carbon credit
   const creditPrice = 50;
@@ -35,9 +41,19 @@ export default function Home() {
     setPotentialEarnings(credits * creditPrice); // Calculate potential earnings
   }, [milesAccrued]);
 
+  const { data: hash, writeContract, isPending } = useWriteContract({});
+
   const claimCarbonCredits = async () => {
     alert("You are about to claim credits");
     console.log("Alert: You are about to mint credits");
+
+    writeContract({
+      address: nftContractAddress,
+      abi: carbonCreditNFT,
+      functionName: "mintCarbonCreditNFT",
+      args: [address, carbonCredits, "https://example.com/token/metadata.json"],
+      chainId: targetNetwork.id,
+    });
   };
 
   return (
