@@ -2,26 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { carbonCreditNFT } from "../components/abis";
-import containerStyles from "../styles/Container.module.css";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount } from "wagmi";
 import { NFTSection } from "~~/components/NFTSection";
-import { useScaffoldReadContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { FaCarSide, FaTachometerAlt, FaCalendarAlt, FaGasPump } from "react-icons/fa"; // Icons for vehicle details
 
 export default function Home() {
   const [vehicleMake, setVehicleMake] = useState("Smart Car");
   const [vehicleModel, setVehicleModel] = useState("Alpha");
-  const [milesAccrued, setMilesAccrued] = useState(2000);
+  const [milesAccrued, setMilesAccrued] = useState(3000);
   const [yearBought, setYearBought] = useState(2020);
   const [carbonCredits, setCarbonCredits] = useState<number>(0);
   const [potentialEarnings, setPotentialEarnings] = useState<number>(0);
-  const [transactionId, setTransactionId] = useState(null);
-  const { targetNetwork } = useTargetNetwork();
-
-  const nftContractAddress = "0x93aBfCd5e9c847110D85127305242d9c38d4f987";
+  const [showNFTs, setShowNFTs] = useState(false); // Toggle between views
+  const [hasNFTs, setHasNFTs] = useState(false); // Check if the user has NFTs
 
   const { address, isConnected } = useAccount();
-  console.log("Address:", address);
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("NFT");
 
   // Price per carbon credit
   const creditPrice = 50;
@@ -33,7 +30,7 @@ export default function Home() {
       const totalEmissions = miles * emissionPerMile; // in grams
       const metricTons = totalEmissions / 1_000_000; // convert to metric tons
       const credits = metricTons; // 1 carbon credit = 1 metric ton CO2
-      return parseFloat(credits.toFixed(2)); // returns a formatted value
+      return Math.floor(credits);
     };
 
     const credits = calculateCarbonCredits(milesAccrued);
@@ -41,80 +38,141 @@ export default function Home() {
     setPotentialEarnings(credits * creditPrice); // Calculate potential earnings
   }, [milesAccrued]);
 
-  const { data: hash, writeContract, isPending } = useWriteContract({});
-
   const claimCarbonCredits = async () => {
     alert("You are about to claim credits");
     console.log("Alert: You are about to mint credits");
 
-    writeContract({
-      address: nftContractAddress,
-      abi: carbonCreditNFT,
+    await writeYourContractAsync({
       functionName: "mintCarbonCreditNFT",
-      args: [address, carbonCredits, "https://example.com/token/metadata.json"],
-      chainId: targetNetwork.id,
+      args: [address, BigInt(carbonCredits), "https://example.com/token/metadata.json"],
     });
   };
 
+  // Read contract to check if the user has NFTs
+  const { data: userNFTBalance } = useScaffoldReadContract({
+    contractName: "NFT",
+    functionName: "balanceOf",
+    args: [address],
+  });
+
+  // Update hasNFTs flag based on the user's balance
+  useEffect(() => {
+    if (userNFTBalance && userNFTBalance.toString() > 0) {
+      setHasNFTs(true);
+    } else {
+      setHasNFTs(false);
+    }
+  }, [userNFTBalance]);
+
   return (
-    <>
+    <div className="min-h-screen bg-gray-100 py-5">
       {isConnected ? (
-        <>
-          <div className={containerStyles.dashboardContainer}>
-            <h2 className={containerStyles.dashboardTitle}>EV User Dashboard</h2>
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">EV User Dashboard</h2>
 
-            <div className={containerStyles.dashboardContent}>
-              <div className={containerStyles.smartCarContainer}>
-                <Image
-                  src="/car.jpg" // Replace with your image path
-                  alt="Smart Car"
-                  className={containerStyles.smartCarImage}
-                  width={600}
-                  height={400}
-                />
-              </div>
+          {/* Toggle between dashboard and NFTs */}
+          <div className="flex justify-center mb-4">
+            <button
+              onClick={() => setShowNFTs(false)}
+              className={`px-4 py-2 mr-2 ${!showNFTs ? 'bg-blue-500' : 'bg-gray-300'} text-white rounded-md`}
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => setShowNFTs(true)}
+              className={`px-4 py-2 ${showNFTs ? 'bg-blue-500' : 'bg-gray-300'} text-white rounded-md`}
+            >
+              My NFTs
+            </button>
+          </div>
 
-              <div className={containerStyles.infoSection}>
-                <ul className={containerStyles.vehicleDetailsList}>
-                  <li className={containerStyles.vehicleDetailItem}>
-                    <strong>Vehicle Make:</strong> {vehicleMake}
-                  </li>
-                  <li className={containerStyles.vehicleDetailItem}>
-                    <strong>Vehicle Model:</strong> {vehicleModel}
-                  </li>
-                  <li className={containerStyles.vehicleDetailItem}>
-                    <strong>Year Bought:</strong> {yearBought}
-                  </li>
-                  <li className={containerStyles.vehicleDetailItem}>
-                    <strong>Miles Accrued:</strong>
-                    <span className={containerStyles.milesAccruedHighlight}>{milesAccrued} miles</span>
-                  </li>
-                </ul>
+          {/* Uniform Height for Both Views */}
+          <div className="min-h-[500px] bg-white shadow-lg rounded-lg p-6 flex items-center justify-center">
+            {/* EV Dashboard View */}
+            {!showNFTs && (
+              <div className="w-full h-full flex flex-col md:flex-row items-center gap-6">
+                <div className="w-full md:w-1/2">
+                  <Image
+                    src="/car.jpg"
+                    alt="Smart Car"
+                    className="rounded-lg"
+                    width={600}
+                    height={400}
+                  />
+                </div>
 
-                <div className={containerStyles.carbonCreditsSection}>
-                  <h3>Carbon Credits Available</h3>
-                  <p>
-                    Based on your mileage, you are eligible to claim{" "}
-                    <span className={containerStyles.creditsHighlight}>{carbonCredits}</span> carbon credits.
-                  </p>
+                <div className="w-full md:w-1/2">
+                  <ul className="grid grid-cols-1 gap-4">
+                    <li className="flex items-center bg-blue-100 p-4 rounded-lg">
+                      <FaCarSide className="text-blue-500 mr-4" size={24} />
+                      <div>
+                        <strong>Vehicle Make:</strong> {vehicleMake}
+                      </div>
+                    </li>
+                    <li className="flex items-center bg-blue-100 p-4 rounded-lg">
+                      <FaTachometerAlt className="text-blue-500 mr-4" size={24} />
+                      <div>
+                        <strong>Vehicle Model:</strong> {vehicleModel}
+                      </div>
+                    </li>
+                    <li className="flex items-center bg-blue-100 p-4 rounded-lg">
+                      <FaCalendarAlt className="text-blue-500 mr-4" size={24} />
+                      <div>
+                        <strong>Year Bought:</strong> {yearBought}
+                      </div>
+                    </li>
+                    <li className="flex items-center bg-blue-100 p-4 rounded-lg">
+                      <FaGasPump className="text-blue-500 mr-4" size={24} />
+                      <div>
+                        <strong>Miles Accrued:</strong>{" "}
+                        <span className="text-blue-500 font-bold">{milesAccrued} miles</span>
+                      </div>
+                    </li>
+                  </ul>
 
-                  <h3>Potential Earnings</h3>
-                  <p>
-                    You could earn <span className={containerStyles.creditsHighlight}>${potentialEarnings}</span> from
-                    selling your carbon credits (1 CC = $50).
-                  </p>
-                  <button onClick={claimCarbonCredits} className={containerStyles.claimButton}>
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold mb-2">Carbon Credits Available</h3>
+                    <p className="text-gray-700">
+                      Based on your mileage, you are eligible to claim{" "}
+                      <span className="font-bold text-blue-600">{carbonCredits}</span> carbon credits.
+                    </p>
+                  </div>
+
+                  <div className="mt-4">
+                    <h3 className="text-lg font-semibold mb-2">Potential Earnings</h3>
+                    <p className="text-gray-700">
+                      You could earn{" "}
+                      <span className="font-bold text-green-600">${potentialEarnings}</span> from selling
+                      your carbon credits (1 CC = $50).
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={claimCarbonCredits}
+                    className="mt-6 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600"
+                    disabled={!carbonCredits}
+                  >
                     Claim Carbon Credits
                   </button>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* My NFTs View */}
+            {showNFTs && (
+              <div className="w-full h-full">
+                {hasNFTs ? (
+                  <NFTSection />
+                ) : (
+                  <p className="text-center text-gray-500">You don't have any NFTs yet.</p>
+                )}
+              </div>
+            )}
           </div>
-          <NFTSection />
-        </>
+        </div>
       ) : (
-        <p>Please connect your wallet to view the dashboard.</p>
+        <p className="text-center text-red-500">Please connect your wallet to view the dashboard.</p>
       )}
-    </>
+    </div>
   );
 }
