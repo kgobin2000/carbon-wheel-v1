@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useAccount } from "wagmi";
 import { NFTSection } from "~~/components/NFTSection";
+import { WelcomeSection } from "~~/components/WelcomeSection";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { FaCarSide, FaTachometerAlt, FaCalendarAlt, FaGasPump, FaQuestionCircle } from "react-icons/fa"; // Icons for vehicle details
 
@@ -181,8 +182,8 @@ export default function Home() {
           </div>
         </div>
       ) : (
-        <p className="text-center text-red-500">Please connect your wallet to view the dashboard.</p>
-      )}
+        <WelcomeSection/>  
+        )}
     </div>
   );
 }

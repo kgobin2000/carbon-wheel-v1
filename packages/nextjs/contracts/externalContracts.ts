@@ -1,4 +1,3 @@
-import nftabi from "./nftAbi.json";
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 /**
