@@ -1,0 +1,117 @@
+/* Merged Styles for Dashboard */
+
+/* General Container Styles */
+.container {
+    text-align: center;
+    padding: 20px 0 50px 0;
+  }
+  
+  /* Dashboard Styles */
+  .dashboardContainer {
+    width: 80%;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    margin-top: 48px;
+
+  }
+  
+  .dashboardTitle {
+    font-size: 2.5rem;
+    color: #1f1f1f;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  
+  .dashboardContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+  }
+  
+  /* Vehicle Info Section */
+  .vehicleInfoContainer {
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+  
+  .smartCarContainer {
+    margin: 20px auto;
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .infoSection {
+    flex: 1;
+    padding-left: 30px;
+    text-align: left;
+  }
+  
+  /* Vehicle Details List */
+  .vehicleDetailsList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+  
+  .vehicleDetailItem {
+    background: #f7f7f7;
+    padding: 15px 25px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .vehicleDetailItem strong {
+    color: #1f1f1f;
+  }
+  
+  /* Highlight for Miles */
+  .milesAccruedHighlight {
+    display: inline-block;
+    background-color: #2ecc71;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  .carbonCreditsSection {
+    background-color: #f7f9fc;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .creditsHighlight {
+    font-weight: bold;
+    color: #2ecc71;
+    font-size: 1.5rem;
+  }
+  
+  .claimButton {
+    background-color: #3498db;
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+  
+  .claimButton:hover {
+    background-color: #2980b9;
+  }
+  

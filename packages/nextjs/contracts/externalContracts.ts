@@ -11,6 +11,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
  *   },
  * } as const;
  */
+
 const externalContracts = {} as const;
 
 export default externalContracts satisfies GenericContractsDeclaration;
