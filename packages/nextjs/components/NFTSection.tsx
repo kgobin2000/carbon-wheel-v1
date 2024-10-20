@@ -24,7 +24,7 @@ export const NFTSection = () => {
       );
 
       // The address of the smart contract
-      const contractAddress = "0x5cfDe4EA6D48E51fDB0433d6F7d26113890A842a";
+      const contractAddress = "0x97Ff5f5b6b5940FCab23cA4E7fa836A7F83D84Da";
 
       // Create a new contract instance
       const contract = new ethers.Contract(contractAddress, nftabi, provider);
@@ -41,7 +41,8 @@ export const NFTSection = () => {
       setNfs(cc);
       setLoading(false); // End loading
     } catch (error) {
-      setError("Error querying contract"); // Set error
+      // setError("Error querying contract"); // Set error
+      querySmartContract()
       setLoading(false); // End loading
       console.error("Error querying contract:", error);
     }
@@ -74,11 +75,11 @@ export const NFTSection = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">
-      <h2 className="text-3xl font-extrabold text-center mb-10 text-gray-900">My Carbon Credit NFTs</h2>
+      <h2 className="text-3xl font-extrabold text-center mb-10 text-gray-900">My Carbon Credits</h2>
 
       <div className="max-w-7xl mx-auto">
         {/* Loading State */}
-        {loading && <p className="text-center text-blue-600">Loading your NFTs...</p>}
+        {loading && <p className="text-center text-blue-600">Loading your Credits...</p>}
 
         {/* Error State */}
         {error && <p className="text-center text-red-600">{error}</p>}
