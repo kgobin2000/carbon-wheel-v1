@@ -2,8 +2,8 @@ name: Lint
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
   pull_request:
     branches:
       - main
@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --immutable
-      
+
       - name: Run nextjs lint
         run: yarn next:lint --max-warnings=0
 
