@@ -39,9 +39,6 @@ export default function Home() {
   }, [milesAccrued]);
 
   const claimCarbonCredits = async () => {
-    alert("You are about to claim credits");
-    console.log("Alert: You are about to mint credits");
-
     await writeYourContractAsync({
       functionName: "mintCarbonCreditNFT",
       args: [address, BigInt(carbonCredits), "https://example.com/token/metadata.json"],

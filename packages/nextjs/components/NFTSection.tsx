@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { nftabi } from "~~/contracts/nftAbi";
 import { ethers } from "ethers";
+import { FaLeaf, FaEthereum, FaRecycle, FaQuestionCircle } from "react-icons/fa"; // Importing icons
 
 export const NFTSection = () => {
   const { isConnected, address } = useAccount(); // Get the connected wallet address
@@ -12,6 +13,7 @@ export const NFTSection = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
 
+  // Query the smart contract for NFTs
   async function querySmartContract() {
     try {
       setLoading(true); // Start loading
@@ -52,10 +54,10 @@ export const NFTSection = () => {
   }, [isConnected, address]);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-5">
-      <h2 className="text-3xl font-bold text-center mb-8">My Carbon Credit NFTs</h2>
+    <div className="min-h-screen bg-gray-100 py-10">
+      <h2 className="text-3xl font-extrabold text-center mb-10 text-gray-900">My Carbon Credit NFTs</h2>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Loading State */}
         {loading && <p className="text-center text-blue-600">Loading your NFTs...</p>}
 
@@ -65,29 +67,44 @@ export const NFTSection = () => {
         {/* No Wallet Connected */}
         {!isConnected && <p className="text-center text-yellow-600">Please connect your wallet</p>}
 
-        {/* Grid Layout for NFT Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {!loading &&
-            nfts.length > 0 &&
-            nfts.map((nyNft, i) => (
-              <div key={i} className="bg-white shadow-lg rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">Carbon Credit NFT #{i + 1}</h3>
-                <p className="text-gray-700 text-lg mb-6">You have {nyNft.toString()} Carbon Credits</p>
-
-                <div className="flex justify-between space-x-2">
-                  <button className="bg-green-500 text-white hover:bg-green-600 rounded-md py-2 px-4 w-full">
-                    Sell
-                  </button>
-                  <button className="bg-blue-500 text-white hover:bg-blue-600 rounded-md py-2 px-4 w-full">
-                    Pool
-                  </button>
-                  <button className="bg-purple-500 text-white hover:bg-purple-600 rounded-md py-2 px-4 w-full">
-                    Trade
-                  </button>
-                </div>
-              </div>
-            ))}
+        {/* Explanation Section */}
+        <div className="bg-yellow-100 text-yellow-800 rounded-lg p-4 mb-6 shadow-md flex items-center">
+          <h3 className="text-lg font-semibold">
+            All NFTs are currently pending sale.{" "}
+            <span className="ml-2">
+              <FaQuestionCircle
+                className="inline-block"
+                title="Once NFTs are in pending sale, they are locked for sale in a pool. You will be reimbursed once the sale completes."
+              />
+            </span>
+          </h3>
         </div>
+
+        {/* Grid Layout for NFT Cards */}
+        <div className="flex flex-wrap -mx-4">
+  {!loading &&
+    nfts.length > 0 &&
+    nfts.map((nyNft, i) => (
+      <div
+        key={i}
+        className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 px-4 mb-8" // Responsive width: 2 cards per row on small, 3 on large, 4 on extra-large
+      >
+        <div className="bg-white shadow-lg rounded-xl p-6 hover:shadow-2xl transform hover:scale-105 transition-transform">
+          <h3 className="text-2xl font-bold mb-4 text-gray-800">NFT</h3>
+          <p className="text-gray-600 text-lg mb-6">{nyNft.toString()} Carbon Credit(s)</p>
+
+          <div className="flex justify-between space-x-4">
+            <button
+              className="flex items-center justify-center bg-gray-300 text-gray-500 rounded-lg py-2 px-4 w-full cursor-not-allowed"
+              disabled
+            >
+              <FaLeaf className="mr-2" /> Pending Sale
+            </button>
+          </div>
+        </div>
+      </div>
+    ))}
+</div>
 
         {/* No NFTs found */}
         {!loading && !error && nfts.length === 0 && isConnected && (
