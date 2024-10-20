@@ -13,7 +13,7 @@ We have integrated **Flow** by leveraging its blockchain to create carbon credit
 ## Team
 
 - **Khalid Gobin**  
-  Full-stack developer with experience in building cutting-edge blockchain applications. Known for a strong ability to solve complex problems and innovate in emerging technologies, particularly in traceability and decentralized systems.  
+  Full-stack developer with experience in building cutting-edge applications. Known for a strong ability to solve complex problems and adapt to emerging technologies, particularly in traceability and decentralized systems.  
   - Twitter: [@GobinKhalid](https://x.com/GobinKhalid)
   - GitHub: [kgobin2000](https://github.com/kgobin2000)
   - LinkedIn: [Khalid Gobin](https://www.linkedin.com/in/khalidgobin/)
