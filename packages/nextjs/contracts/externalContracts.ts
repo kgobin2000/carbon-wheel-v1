@@ -15,7 +15,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const externalContracts = {
   545: {
     NFT: {
-      address: "0x97Ff5f5b6b5940FCab23cA4E7fa836A7F83D84Da",
+      address: "0x5af399Cf2784dFec0aA2c91D33229bF4a69a5C95",
       abi: [
         {
           inputs: [],
