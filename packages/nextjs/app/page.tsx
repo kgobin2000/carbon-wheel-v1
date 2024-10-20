@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useAccount } from "wagmi";
 import { NFTSection } from "~~/components/NFTSection";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { FaCarSide, FaTachometerAlt, FaCalendarAlt, FaGasPump } from "react-icons/fa"; // Icons for vehicle details
+import { FaCarSide, FaTachometerAlt, FaCalendarAlt, FaGasPump, FaQuestionCircle } from "react-icons/fa"; // Icons for vehicle details
 
 export default function Home() {
   const [vehicleMake, setVehicleMake] = useState("Smart Car");
@@ -16,6 +16,7 @@ export default function Home() {
   const [potentialEarnings, setPotentialEarnings] = useState<number>(0);
   const [showNFTs, setShowNFTs] = useState(false); // Toggle between views
   const [hasNFTs, setHasNFTs] = useState(false); // Check if the user has NFTs
+  const [showCalcInfo, setShowCalcInfo] = useState(false); // Show calculation info
 
   const { address, isConnected } = useAccount();
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("NFT");
@@ -134,6 +135,18 @@ export default function Home() {
                       <span className="font-bold text-blue-600">{carbonCredits}</span> carbon credits.
                     </p>
                   </div>
+
+                  <div className="mt-2 text-sm text-gray-500 cursor-pointer flex items-center" onClick={() => setShowCalcInfo(!showCalcInfo)}>
+                    <FaQuestionCircle className="mr-2" />
+                    <span>How is this calculated?</span>
+                  </div>
+                  {showCalcInfo && (
+                    <div className="mt-2 bg-gray-100 p-4 rounded-lg shadow-md">
+                      <p>1 mile driven generates approximately 404 grams of CO2 emissions, based on average gas vehicle emissions.</p>
+                      <p>This means for every 1,000 miles driven, you generate approximately 0.404 metric tons of CO2.</p>
+                      <p>1 Carbon Credit = 1 Metric Ton of CO2, so your credits are calculated based on this conversion.</p>
+                    </div>
+                  )}
 
                   <div className="mt-4">
                     <h3 className="text-lg font-semibold mb-2">Potential Earnings</h3>
